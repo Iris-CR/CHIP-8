@@ -1,0 +1,9 @@
+git init
+
+git add .
+git commit -m 'backup'
+
+git log
+
+git checkout -b backup
+git branch
