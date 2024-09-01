@@ -5,5 +5,7 @@ git commit -m 'backup'
 
 git log
 
+git checkout loghash
+
 git checkout -b backup
 git branch
