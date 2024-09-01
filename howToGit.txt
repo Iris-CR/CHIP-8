@@ -1,11 +1,16 @@
 git init
 
 git add .
-git commit -m 'backup'
+git commit -m 'message'
 
+git status
 git log
 
-git checkout loghash
+git checkout *commit hash*
 
-git checkout -b backup
+git checkout -b new-branch
 git branch
+
+git push origin master
+git push origin new-branch
+git pull origin master
