@@ -1,0 +1,73 @@
+16 8-bit Registers:
+    A register is a dedicated location on a CPU for storage. Any operation that a CPU does must be done within its registeres.
+    In a CPU usually there are just a few of them, the data is stored in memory instead.
+    Operations involve loading data from memory into registers, and then operating on thoso registers, finally storing the result back in memory.
+
+    The CHIP-8 has 16 8-bit registers, labeled from V0 to VF, and each one of them can hold any value from 0x00 to 0xFF.
+    The register VF is a special one, it's used as a flag to hold information about the result of operations.
+
+4096 Bytes of Memory:
+    Since it's really expensive to make register-space, and we need large amounts of data, we use memory.
+    The computer will need a large chunk of general memory just to hold program instructions, long-term and short-term data, we acess it by address.
+
+    The CHIP-8 has 4096 bytes of memory, so, we have addresses from 0x000 to 0xFFF.
+    They are divided in three parts:
+
+        From 0x000 to 0x1FF: Originally reserverd for the CHIP-8 interpreter.
+
+        From 0x050 to 0x0A0: Storage for the 16 built-in characters (0 throught F), which we will manually put into our memory, because ROMs will need them.
+
+        From 0x200 to 0xFFF: Space reserved to instructions from the ROM.
+
+16-bit Index Register:
+    Is a special register used to store memory addresses for use in other operations.
+        It is necessary to be atleast an 16-bit register, because the maximum memory address, 0xFFF, cannot be stored in a 8-bit register.
+
+16-bit Program Counter:
+    The Program Counter(PC) is a special register that hold the address of the next instruction that should be executed.
+    An instruction is 2 bytes, but memory is addressed as a single byte, so when we fetch an instruction, we need:
+        To fetch a byte from PC and a byte from PC+1 and connecte them into a single value.
+        Then increment the PC by 2, before any instructions be executed, since they can manipulate the PC to control the program flow.
+
+16-Level Stack:
+    A stack is how the CPU keep track of the order of execution when it calls into functions.
+    The (CALL) instruction will cause the CPU to execute instructions in a different region of the program.
+    When it reaches another instruction (RET), it must be able to go back to where it was when it hit the CALL instruction.
+    The stack stores the PC value when the CALL was executed, and the RETURN pulls it's address from the stack and puts it back into the PC.
+
+    The CHIP-8 has a 16 leveled stack, meaning it can hold 16 PCs at same time, so functions can call another function and so on, and then return.
+        Putting a PC onto the stack is called pushing, and pulling off is called popping.
+
+8-bit Stack Pointer:
+    The same way we need a PC to track where in memory the CPU is executing, we will need a Stack Pointer (SP) to tell us where in the Stack is our PC.
+    We will treat the Stack as an array, since it has only 16 indexis, we only need a byte for the SP.
+    We usually don't delete the data of popped PCs from the Stack, we just copy the value and decrement the SP so it "points" to the last value.
+                        Scheck the Schema for visuals.
+
+8-bit Delay Timer:
+    The CHIP-8 has a timer, if it has the value 0, it will stay 0, else, when loaded with a value, it will decrement at a rate of 60Hz.
+
+8-bit Sound Timer:
+    It is also a timer, behavioring the same as the Delay Timer, but when it has a value it also buzz a single tone.
+
+16 Input Keys:
+    The CHIP-8 has 16 input keys that match the fist 16 hex values. They followed the layout ahead:
+            |   1   |   2   |   4   |   C   |
+            |   4   |   5   |   6   |   D   |
+            |   7   |   8   |   9   |   E   |
+            |   A   |   0   |   B   |   F   |
+
+64x32 Monochrome Display Memory:
+    The CHIP-8 has an memory buffer used for storing the graphics to display. It is 64 pixels wide and 32 pixels high, either on or off.
+    Using a unsigned int 32, we will have 0xFFFFFFFF as on, and 0x00000000 as off.
+    The draw instruction iterates over each pixel in a sprite and XORs the sprite pixel with the display pixel, like this:
+        Sprite Pixel OFF XOR Display Pixel OFF == Display pixel OFF
+        Sprite Pixel OFF XOR Display Pixel ON == Display pixel ON
+        Sprite Pixel ON XOR Display Pixel OFF == Display pixel ON
+        Sprite Pixel ON XOR Display Pixel ON == Display pixel OFF
+    
+    This means that a Sprite is able set or unset the Display, since is monochormatic.
+        These Sprites are defined by the hexadecimal digitis 0 throught F, they are 5 bytes long.
+        The Sprite data should be stored in the interpreter area of the CHIP-8 memory, I will use the 0x050 address as the start area.
+
+We will use all this to create a class called Chip8.

@@ -1,0 +1,25 @@
+We will write an interpreter of the CHIP-8.
+
+The basic understanding of how a CPU works is necessary, since every instruction must be very explicit and logical.
+    Emulators read original machine code instruction that were assembled for the target machine, interprets it and then replicate the functionality.
+
+ROM files are the instructions, the games in this case, we must be able to read it and mimic the original machine or console.
+    For exemple we may read a instruction like this: $7522
+        It is a two byte expression, the fist part, $75 says ADD to Register 5, and the second byte, $22 is the value to be added.
+        ADD $22 to Register 5           Which in code could be:
+        registers[5] += 0x22;
+                                        We will be using $ and 0x to represent numbers in hexadecimal.
+
+To successfully achive our objective we will need to know every major component of the machine, the CHIP-8 has:
+    16  8-bit Registers
+    4096  Bytes of Memory
+    16-bit Index Register
+    16-bit Program Counter
+    16-level Stack
+    8-bit Delay Timer
+    8-bit Sound Timer
+    16 Input Keys
+    64x32 Monochrome Display Memory
+                                        They will be written in another file.
+
+The CHIP-8 has 34 instructions that we need to emulate.
