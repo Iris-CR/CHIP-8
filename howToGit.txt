@@ -11,6 +11,6 @@ git checkout *commit hash*
 git checkout -b new-branch
 git branch
 
-git push origin master
+git push origin main
 git push origin new-branch
-git pull origin master
+git pull origin main
